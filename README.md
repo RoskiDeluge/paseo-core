@@ -53,16 +53,6 @@ Paseo provides these environments with:
 
 ---
 
-## 🔮 Roadmap
-
-### MVP Goals
-
-* [x] Deploy a single pod with persistent memory
-* [x] Stub out agent logic for proof-of-concept
-* [ ] Add CLI support for spinning up and inspecting pods
-* [ ] Document pod lifecycles and security model
-
-
 ## 🧠 Philosophy
 
 Paseo reflects a shift in how we think about agents—not as single massive brains, but as **ecosystems of computation**. As LLMs grow more capable, what we’ll need isn’t smarter agents—but **better ground** for them to stand on. Paseo is that ground.
