@@ -3,33 +3,20 @@
   "name": "paseo-mvp",
   "main": "src/index.ts",
   "compatibility_date": "2025-06-10",
-  "observability": {
-    "enabled": true
-  },
 
-  // Enable Smart Placement (optional for now, but helpful for performance)
-  // "placement": { "mode": "smart" },
-
-  // Durable Object Binding
   "durable_objects": {
     "bindings": [
       {
         "name": "PASEO_POD",
-        "class_name": "PaseoPod"
+        "class_name": "PASEO_POD"
       }
     ]
   },
 
-  // Migration Tag (required when using Durable Objects)
   "migrations": [
     {
       "tag": "v1",
-      "new_classes": ["PaseoPod"]
+      "new_sqlite_classes": ["PASEO_POD"]
     }
   ]
-
-  // Uncomment and configure as needed later:
-  // "vars": { "MY_VARIABLE": "value" },
-  // "assets": { "directory": "./public/", "binding": "ASSETS" },
-  // "services": [{ "binding": "MY_SERVICE", "service": "my-service" }]
 }

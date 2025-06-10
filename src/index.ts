@@ -1,21 +1,34 @@
-import PaseoPod from './paseo-pod';
+// import type { DurableObjectNamespace } from "@cloudflare/workers-types";
+
+// export interface Env {
+//   PASEO_POD: DurableObjectNamespace;
+// }
 
 export interface Env {
-  PASEO_POD: DurableObjectNamespace;
+  PASEO_POD: any; // temporarily use 'any' until type declarations are available
 }
+
 
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
-    const podId = env.PASEO_POD.idFromName("singleton");
-    const podStub = env.PASEO_POD.get(podId);
+    const pathParts = url.pathname.split("/").filter(Boolean);
 
-    // Forward the request to the Durable Object
-    return podStub.fetch(request);
-  },
+    if (pathParts[0] === "pods" && pathParts[1]) {
+      const podName = pathParts[1];
+      const subpath = pathParts.slice(2).join("/");
+
+      const podId = env.PASEO_POD.idFromName(podName);
+      const stub = env.PASEO_POD.get(podId);
+
+      url.pathname = "/" + subpath;
+      const newRequest = new Request(url.toString(), request);
+      return await stub.fetch(newRequest);
+    }
+
+    return new Response("Not Found", { status: 404 });
+  }
 };
 
-// Register the Durable Object class here
-export const durableObjects = {
-  PASEO_POD: PaseoPod,
-};
+// ✅ Re-export your DO class so wrangler can detect it
+export { PASEO_POD } from "./paseo-pod";
