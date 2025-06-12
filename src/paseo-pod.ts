@@ -1,86 +1,106 @@
-import { DurableObject } from "cloudflare:workers";
+import { DurableObject } from 'cloudflare:workers';
 
 interface ConversationTurn {
-  prompt: string;
-  response: string;
+	prompt: string;
+	response: string;
 }
 
 export class PASEO_POD extends DurableObject {
-  state: DurableObjectState;
-  env: any;
+	constructor(state: DurableObjectState, env: any) {
+		super(state, env);
+	}
 
-  constructor(state: DurableObjectState, env: any) {
-    super(state, env);
-    this.state = state;
-    this.env = env;
-  }
+	// RPC methods
+	async status(): Promise<string> {
+		return 'PaseoPod is alive.';
+	}
 
-  async fetch(request: Request): Promise<Response> {
-    const url = new URL(request.url);
-    const { pathname, searchParams } = url;
+	async get(key: string): Promise<unknown> {
+		return await this.ctx.storage.get(key);
+	}
 
-    switch (pathname) {
-      case "/":
-        return new Response("PaseoPod is alive.", { status: 200 });
+	async set(key: string, value: unknown): Promise<void> {
+		await this.ctx.storage.put(key, value);
+	}
 
-      case "/get": {
-        const key = searchParams.get("key");
-        if (!key) return new Response("Missing key", { status: 400 });
-        const value = await this.state.storage.get(key);
-        return Response.json({ key, value });
-      }
+	async all(): Promise<Record<string, unknown>> {
+		const all = await this.ctx.storage.list();
+		return Object.fromEntries(all);
+	}
 
-      case "/set": {
-        const key = searchParams.get("key");
-        const value = searchParams.get("value");
-        if (!key || value === null) {
-          return new Response("Missing key or value", { status: 400 });
-        }
-        await this.state.storage.put(key, value);
-        return Response.json({ status: "ok", key, value });
-      }
+	async llm(prompt: string): Promise<string> {
+		const fakeResponse = `This is a simulated LLM response to: "${prompt}"`;
 
-      case "/all": {
-        const all = await this.state.storage.list();
-        return Response.json(Object.fromEntries(all));
-      }
+		const conversation = (await this.ctx.storage.get<ConversationTurn[]>('conversation')) || [];
+		conversation.push({ prompt, response: fakeResponse });
+		await this.ctx.storage.put('conversation', conversation);
 
-      case "/llm": {
-        if (request.method !== "POST") {
-          return new Response("Method Not Allowed", { status: 405 });
-        }
+		return fakeResponse;
+	}
 
-        let body: { prompt?: string };
-        try {
-          body = await request.json();
-        } catch {
-          return new Response("Invalid JSON", { status: 400 });
-        }
+	async conversation(): Promise<ConversationTurn[]> {
+		return (await this.ctx.storage.get<ConversationTurn[]>('conversation')) || [];
+	}
 
-        const prompt = body.prompt;
-        if (!prompt) {
-          return new Response("Missing 'prompt' in body", { status: 400 });
-        }
+	// Optional HTTP interface mapping to the RPC methods
+	async fetch(request: Request): Promise<Response> {
+		const url = new URL(request.url);
+		const { pathname, searchParams } = url;
 
-        // Simulated LLM response
-        const fakeResponse = `This is a simulated LLM response to: "${prompt}"`;
+		switch (pathname) {
+			case '/':
+				return new Response(await this.status(), { status: 200 });
 
-        const conversation =
-          (await this.state.storage.get<ConversationTurn[]>("conversation")) || [];
-        conversation.push({ prompt, response: fakeResponse });
-        await this.state.storage.put("conversation", conversation);
+			case '/get': {
+				const key = searchParams.get('key');
+				if (!key) return new Response('Missing key', { status: 400 });
+				const value = await this.get(key);
+				return Response.json({ key, value });
+			}
 
-        return Response.json({ response: fakeResponse });
-      }
+			case '/set': {
+				const key = searchParams.get('key');
+				const value = searchParams.get('value');
+				if (!key || value === null) {
+					return new Response('Missing key or value', { status: 400 });
+				}
+				await this.set(key, value);
+				return Response.json({ status: 'ok', key, value });
+			}
 
-      case "/conversation": {
-        const conversation =
-          (await this.state.storage.get<ConversationTurn[]>("conversation")) || [];
-        return Response.json({ conversation });
-      }
+			case '/all': {
+				const all = await this.all();
+				return Response.json(all);
+			}
 
-      default:
-        return new Response("Not Found", { status: 404 });
-    }
-  }
+			case '/llm': {
+				if (request.method !== 'POST') {
+					return new Response('Method Not Allowed', { status: 405 });
+				}
+
+				let body: { prompt?: string };
+				try {
+					body = await request.json();
+				} catch {
+					return new Response('Invalid JSON', { status: 400 });
+				}
+
+				const prompt = body.prompt;
+				if (!prompt) {
+					return new Response("Missing 'prompt' in body", { status: 400 });
+				}
+
+				const fakeResponse = await this.llm(prompt);
+				return Response.json({ response: fakeResponse });
+			}
+
+			case '/conversation': {
+				const conversation = await this.conversation();
+				return Response.json({ conversation });
+			}
+
+			default:
+				return new Response('Not Found', { status: 404 });
+		}
+	}
 }
