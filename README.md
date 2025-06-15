@@ -1,71 +1,78 @@
-# 🚘 Paseo
+# Paseo SDK
 
-**Lightweight ephemeral environments for agentic workflows**
+Paseo is an experimental SDK and runtime concept for deploying intelligent, stateful pods that serve as digital counterparts to real-world entities. These pods are lightweight, composable environments designed to provide access to compute, networking, and storage fundamentals. While Paseo is compatible with agentic workflows, its design generalizes to support a wider vision: enabling better alignment between real-world entities (humans, organizations, devices) and their operational representations in the digital world.
 
----
+## Why Paseo?
 
-## 🌱 What is Paseo?
+Amid the rapid growth of agent-based systems and AI applications, many foundational needs remain unchanged: the need to represent, isolate, coordinate, and persist the actions and states of entities—be they people, teams, systems, or services. Paseo addresses this need by providing ephemeral yet durable execution environments called **pods**, powered by Cloudflare Workers and Durable Objects.
 
-**Paseo** is an SDK and runtime that enables developers to spawn **ephemeral, intelligent “pods”**—self-contained, networked, and persistent micro-environments for agents.
+Paseo's goal is not to build agents, but to serve as the infrastructural substrate that allows any digital entity to act meaningfully and persistently across time and space.
 
-Inspired by Marvin Minsky’s *Society of Mind*, Paseo envisions intelligence not as a monolith, but as a **dynamic constellation of lightweight, specialized minds**—each working in isolation or in collaboration to accomplish a goal.
+## ✨ Key Features
 
-These pods give agents on-demand access to:
+- **Pods = Isolated micro-environments** for compute + state
+- **Built on Cloudflare Workers + Durable Objects** for global reach and persistence
+- **Composable via simple SDK**: use with or without LLMs
+- **Supports ephemeral and long-lived interactions**
+- **General-purpose**: works with agents, orgs, services, or humans-in-the-loop
 
-* 🧠 **Compute** (via Cloudflare Workers)
-* 📀 **Memory** (via Durable Objects with persistent SQLite)
-* 🌐 **Networking** (auto-addressable APIs)
-* 🕵️ **Observability** (logs, memory snapshots, identity)
+## 📦 Installation
 
-Each pod becomes a **living thread** of cognition—stateful, inspectable, and composable.
+> **Note**: Paseo SDK will be published to npm soon.
 
----
+Until then:
 
-## 🧹 Why Paseo?
+```bash
+# Local install (assuming paseo-sdk directory is adjacent)
+npm install ../paseo-sdk
+```
 
-Agentic applications today lack **first-class execution environments** designed for:
+## 🚀 Quick Start
 
-* short-lived, **task-specific computation**
-* built-in memory that is scoped and persistent
-* modular, inter-agent communication
-* seamless deployment and scalability
+1. Deploy your own Paseo Worker + Durable Object using [paseo-mvp](https://github.com/your-org/paseo-mvp).
+2. Instantiate the SDK with the deployed URL:
 
-Paseo provides these environments with:
+```ts
+import { createPaseoClient } from 'paseo-sdk';
 
-* ✅ Web-native primitives (Cloudflare infrastructure)
-* ✅ Minimal setup (no Docker, no VM orchestration)
-* ✅ Portable SDK for declaring and interacting with pods
-* ✅ Future-proofing: agents can scale across a planetary mesh
+const paseo = createPaseoClient('https://your-worker-url.workers.dev');
+paseo.usePod('my-entity');
 
-
-## 📦 Architecture Overview
-
-* **Paseo SDK**: Developer interface to define, deploy, and interact with pods
-* **Paseo Runtime (Cloudflare)**:
-
-  * **Workers** serve as the execution surface for pods
-  * **Durable Objects** provide stateful storage with embedded SQLite
-* **Pod Interface**:
-
-  * Every pod has a RESTful endpoint
-  * Optionally memory-enabled and state-persistent
-  * May communicate with other pods or be orchestrated centrally
-
----
+const reply = await paseo.sendPrompt('What is my current state?');
+console.log('Response:', reply);
+```
 
 ## 🧠 Philosophy
 
-Paseo reflects a shift in how we think about agents—not as single massive brains, but as **ecosystems of computation**. As LLMs grow more capable, what we’ll need isn’t smarter agents—but **better ground** for them to stand on. Paseo is that ground.
+Paseo is grounded in the belief that digital systems should not require premature commitment to AI-native workflows. Instead, the priority is to represent entities—human or non-human—in ways that preserve continuity, autonomy, and potential for growth. Inspired by Minsky's "Society of Mind" and the reality of distributed cognition, Paseo pods can form networks of co-operating intelligences, but begin simply as containers for structured memory and interaction.
 
-It’s not about making the smartest brain, but about letting many small minds do their part—safely, observably, and at scale.
+Pods can live temporarily or persist indefinitely, accumulate experience, reflect decisions, or wait silently until needed. They can be used by agents—or serve as agents themselves. But most importantly, they can mirror the structure and complexity of the world, without being constrained by it.
+
+## 🔧 Current Capabilities
+
+- Persistent conversation and prompt/response history
+- Read/write key-value data storage
+- Retrieve full memory state
+
+## 🗺 Roadmap (Planned)
+
+- CLI for local pod/dev environment management
+- Automation for Worker + DO deployment
+- Event hooks and background task scaffolding
+- Pod relationships and federation (graph view)
+- Identity/trust layer for inter-pod communication
+- Optional LLM backends for enriched responses
+
+## 🧪 Status
+
+Paseo is in active R&D. We're refining the primitives of pod creation, state preservation, and communication in a way that remains open, minimal, and robust.
+
+## 🤝 Contributing
+
+Coming soon! For now, explore the code and file issues or suggestions.
 
 ---
 
-## 📬 Get Involved
+Paseo is an experiment in digital embodiment: not just agents with memory, but memory with meaning. Not just workers, but environments for work. Not just systems, but companions.
 
-This project is early and exploratory. If you’re interested in:
 
-* agent architectures
-* serverless and edge infrastructure
-* programmable memory
-* or building the future substrate for AI
