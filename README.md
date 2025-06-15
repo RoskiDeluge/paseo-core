@@ -1,6 +1,6 @@
-# Paseo SDK
+# Paseo
 
-Paseo is an experimental SDK and runtime concept for deploying intelligent, stateful pods that serve as digital counterparts to real-world entities. These pods are lightweight, composable environments designed to provide access to compute, networking, and storage fundamentals. While Paseo is compatible with agentic workflows, its design generalizes to support a wider vision: enabling better alignment between real-world entities (humans, organizations, devices) and their operational representations in the digital world.
+Paseo is an experimental runtime concept for deploying intelligent, stateful pods that serve as digital counterparts to real-world entities. These pods are lightweight, composable environments designed to provide access to compute, networking, and storage fundamentals. While Paseo is compatible with agentic workflows, its design generalizes to support a wider vision: enabling better alignment between real-world entities (humans, organizations, devices) and their operational representations in the digital world.
 
 ## Why Paseo?
 
@@ -23,23 +23,8 @@ Paseo's goal is not to build agents, but to serve as the infrastructural substra
 Until then:
 
 ```bash
-# Local install (assuming paseo-sdk directory is adjacent)
-npm install ../paseo-sdk
-```
-
-## 🚀 Quick Start
-
-1. Deploy your own Paseo Worker + Durable Object using [paseo-mvp](https://github.com/your-org/paseo-mvp).
-2. Instantiate the SDK with the deployed URL:
-
-```ts
-import { createPaseoClient } from 'paseo-sdk';
-
-const paseo = createPaseoClient('https://your-worker-url.workers.dev');
-paseo.usePod('my-entity');
-
-const reply = await paseo.sendPrompt('What is my current state?');
-console.log('Response:', reply);
+# Local install (assuming paseo-mvp directory is adjacent)
+npm install ../paseo-mvp
 ```
 
 ## 🧠 Philosophy
