@@ -29,7 +29,7 @@ npm install ../paseo-mvp
 
 ## 🧠 Philosophy
 
-Paseo is grounded in the belief that digital systems should not require premature commitment to AI-native workflows. Instead, the priority is to represent entities—human or non-human—in ways that preserve continuity, autonomy, and potential for growth. Inspired by Minsky's "Society of Mind" and the reality of distributed cognition, Paseo pods can form networks of co-operating intelligences, but begin simply as containers for structured memory and interaction.
+Paseo is grounded in the belief that digital systems should not require premature commitment to AI-native workflows. Instead, the priority is to represent entities—human or non-human—in ways that preserve continuity, autonomy, and potential for growth. Inspired by Marvin Minsky's "Society of Mind," Paseo pods can form networks of co-operating intelligences, but begin simply as containers for structured memory and interaction.
 
 Pods can live temporarily or persist indefinitely, accumulate experience, reflect decisions, or wait silently until needed. They can be used by agents—or serve as agents themselves. But most importantly, they can mirror the structure and complexity of the world, without being constrained by it.
 
@@ -51,13 +51,4 @@ Pods can live temporarily or persist indefinitely, accumulate experience, reflec
 ## 🧪 Status
 
 Paseo is in active R&D. We're refining the primitives of pod creation, state preservation, and communication in a way that remains open, minimal, and robust.
-
-## 🤝 Contributing
-
-Coming soon! For now, explore the code and file issues or suggestions.
-
----
-
-Paseo is an experiment in digital embodiment: not just agents with memory, but memory with meaning. Not just workers, but environments for work. Not just systems, but companions.
-
 
