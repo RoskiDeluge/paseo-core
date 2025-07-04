@@ -48,7 +48,3 @@ Pods can live temporarily or persist indefinitely, accumulate experience, reflec
 - Identity/trust layer for inter-pod communication
 - Optional LLM backends for enriched responses
 
-## 🧪 Status
-
-Paseo is in active R&D. We're refining the primitives of pod creation, state preservation, and communication in a way that remains open, minimal, and robust.
-
