@@ -39,6 +39,11 @@ Pods can live temporarily or persist indefinitely, accumulate experience, reflec
 - Read/write key-value data storage
 - Retrieve full memory state
 
+### Creating a Pod
+
+Send a `POST` request to `/pods` to generate a new pod. The response contains the
+randomly assigned `podName` which can then be used with the other endpoints.
+
 ## 🗺 Roadmap (Planned)
 
 - CLI for local pod/dev environment management

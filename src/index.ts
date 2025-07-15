@@ -13,7 +13,18 @@ export default {
 		const url = new URL(request.url);
 		const pathParts = url.pathname.split('/').filter(Boolean);
 
-		if (pathParts[0] === 'pods' && pathParts[1]) {
+               if (pathParts[0] === 'pods' && !pathParts[1]) {
+                       if (request.method !== 'POST') {
+                               return new Response('Method Not Allowed', { status: 405 });
+                       }
+                       const podName = crypto.randomUUID();
+                       const podId = env.PASEO_POD.idFromName(podName);
+                       const stub = env.PASEO_POD.get(podId);
+                       await stub.status();
+                       return Response.json({ podName });
+               }
+
+               if (pathParts[0] === 'pods' && pathParts[1]) {
 			const podName = pathParts[1];
 			const subpath = pathParts.slice(2).join('/');
 
