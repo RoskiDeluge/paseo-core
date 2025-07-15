@@ -23,8 +23,8 @@ Paseo's goal is not to build agents, but to serve as the infrastructural substra
 Until then:
 
 ```bash
-# Local install (assuming paseo-mvp directory is adjacent)
-npm install ../paseo-mvp
+# Local install (assuming paseo-core directory is adjacent)
+npm install ../paseo-core
 ```
 
 ## 🧠 Philosophy
