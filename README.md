@@ -91,7 +91,7 @@ Once deployed, Paseo Core provides the following REST API endpoints:
 
 While you can interact with these endpoints directly, we recommend using the [paseo-sdk](https://github.com/RoskiDeluge/paseo-sdk) for a better developer experience:
 
-Add the following to your .env file at the root of your project and replace the URL with the one deployed to Cloudlare:
+Add the following to your .env file at the root of your project and replace the URL with the one deployed to Cloudflare:
 ```bash
 PASEO_WORKER_URL=https://your-worker.your-sub-domain.workers.dev
 ```
