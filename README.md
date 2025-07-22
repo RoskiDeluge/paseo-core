@@ -96,6 +96,7 @@ Add the following to your .env file at the root of your project and replace the 
 PASEO_WORKER_URL=https://your-worker.your-sub-domain.workers.dev
 ```
 
+Then create the client within your project like so:
 ```javascript
 import { PaseoClient } from 'paseo-sdk';
 
