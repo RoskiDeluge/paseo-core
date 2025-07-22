@@ -91,10 +91,15 @@ Once deployed, Paseo Core provides the following REST API endpoints:
 
 While you can interact with these endpoints directly, we recommend using the [paseo-sdk](https://github.com/RoskiDeluge/paseo-sdk) for a better developer experience:
 
+Add the following to your .env file at the root of your project and replace the URL with the one deployed to Cloudlare:
+```bash
+PASEO_WORKER_URL=https://your-worker.your-sub-domain.workers.dev
+```
+
 ```javascript
 import { PaseoClient } from 'paseo-sdk';
 
-const client = new PaseoClient('https://your-worker.your-subdomain.workers.dev');
+const client = new PaseoClient();
 const pod = await client.createPod();
 await pod.sendMessage('Hello, pod!');
 ```
