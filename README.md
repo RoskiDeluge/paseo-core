@@ -1,6 +1,6 @@
 # Paseo Core
 
-Paseo Core is the backend infrastructure for deploying intelligent, stateful pods as Cloudflare Workers with Durable Objects. This repository provides the server-side implementation that powers the Paseo ecosystem, creating REST API endpoints for pod management, persistent storage, and state coordination.
+Paseo Core is a backend infrastructure for deploying intelligent, stateful pods as Cloudflare Workers with Durable Objects. This repository provides the server-side implementation that powers the Paseo ecosystem, creating REST API endpoints for pod management, persistent storage, and state coordination.
 
 **This is the backend component** - for client-side integration, use the [paseo-sdk](https://github.com/RoskiDeluge/paseo-sdk) repository which provides a simple interface to interact with these Workers endpoints.
 
