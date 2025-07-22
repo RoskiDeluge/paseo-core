@@ -6,7 +6,7 @@ Paseo is an experimental runtime concept for deploying intelligent, stateful pod
 
 Amid the rapid growth of agent-based systems and AI applications, many foundational needs remain unchanged: the need to represent, isolate, coordinate, and persist the actions and states of entities—be they people, teams, systems, or services. Paseo addresses this need by providing ephemeral yet durable execution environments called **pods**, powered by Cloudflare Workers and Durable Objects.
 
-Paseo's goal is not to build agents, but to serve as the infrastructural substrate that allows any digital entity to act meaningfully and persistently across time and space.
+Paseo's goal is not to build agents, but to serve as an infrastructural substrate that allows any digital entity to act meaningfully and persistently across time and space.
 
 ## ✨ Key Features
 
