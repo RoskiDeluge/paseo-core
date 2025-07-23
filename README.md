@@ -98,11 +98,15 @@ PASEO_WORKER_URL=https://your-worker.your-sub-domain.workers.dev
 
 Then create the client within your project like so:
 ```javascript
-import { PaseoClient } from 'paseo-sdk';
+import { createPaseoClient } from "paseo-sdk";
 
-const client = new PaseoClient();
-const pod = await client.createPod();
-await pod.sendMessage('Hello, pod!');
+const paseo = await createPaseoClient();
+
+const reply = await paseo.sendPrompt("What's the current state of this entity?");
+console.log("🤖", reply);
+
+const history = await paseo.getConversation();
+console.log("🧠", history);
 ```
 
 ## 🗺 Roadmap
