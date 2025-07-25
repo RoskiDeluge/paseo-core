@@ -93,7 +93,7 @@ While you can interact with these endpoints directly, we recommend using the [pa
 
 Add the following to your .env file at the root of your project and replace the URL with the one deployed to Cloudflare:
 ```bash
-PASEO_ENDPOINT=https://paseo-core.your-sub-domain.workers.dev
+PASEO_ENDPOINT=https://paseo-core.<your-account>.workers.dev
 ```
 
 Then create the client within your project like so:

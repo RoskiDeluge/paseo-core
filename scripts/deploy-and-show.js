@@ -38,7 +38,7 @@ function deployAndShowEndpoint() {
 			console.log(`🌐 Worker endpoint: ${fullEndpoint}`);
 			console.log(`🎯 Ready to use!`);
 		} else {
-			console.log(`🌐 Worker endpoint: https://${workerName}.{your-subdomain}.workers.dev`);
+			console.log(`🌐 Worker endpoint: https://${workerName}.<your-account>.workers.dev`);
 			console.log(`⚠️  Could not extract full URL from deploy output`);
 		}
 
@@ -54,9 +54,9 @@ function deployAndShowEndpoint() {
 		console.log('   Add to your .env file:');
 
 		if (fullEndpoint) {
-			console.log(`   PASEO_WORKER_URL=${fullEndpoint}`);
+			console.log(`   PASEO_ENDPOINT=${fullEndpoint}`);
 		} else {
-			console.log(`   PASEO_WORKER_URL=https://${workerName}.{your-subdomain}.workers.dev`);
+			console.log(`   PASEO_ENDPOINT=https://${workerName}.<your-account>.workers.dev`);
 		}
 
 		console.log('');
