@@ -6,7 +6,7 @@ const path = require('path');
 
 function deployAndShowEndpoint() {
 	try {
-		console.log('🚀 Deploying to Cloudflare Workers...\n');
+		console.log('🚀 Deploying to Cloudflare ...\n');
 
 		// Run wrangler deploy and capture output
 		const deployOutput = execSync('wrangler deploy', {
@@ -32,23 +32,23 @@ function deployAndShowEndpoint() {
 		console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 		console.log('🎉 Deployment Summary');
 		console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-		console.log(`✅ Worker name: ${workerName}`);
+		console.log(`✅ Pod name: ${workerName}`);
 
 		if (fullEndpoint) {
-			console.log(`🌐 Worker endpoint: ${fullEndpoint}`);
+			console.log(`🌐 Pod endpoint: ${fullEndpoint}`);
 			console.log(`🎯 Ready to use!`);
 		} else {
-			console.log(`🌐 Worker endpoint: https://${workerName}.<your-account>.workers.dev`);
+			console.log(`🌐 Pod endpoint: https://${workerName}.<your-account>.workers.dev`);
 			console.log(`⚠️  Could not extract full URL from deploy output`);
 		}
 
 		console.log('');
 		console.log('📚 Available API endpoints:');
-		console.log('   POST   /pods                        - Create a new pod');
-		console.log('   GET    /pods/{podName}              - Get pod state');
-		console.log('   POST   /pods/{podName}/messages     - Send message to pod');
-		console.log('   GET    /pods/{podName}/memory       - Get pod memory');
-		console.log('   PUT    /pods/{podName}/memory/{key} - Store in pod memory');
+		console.log('   POST   /pods                          - Create a new actor');
+		console.log('   GET    /pods/{actorName}              - Get actor state');
+		console.log('   POST   /pods/{actorName}/messages     - Send message to actor');
+		console.log('   GET    /pods/{actorName}/memory       - Get actor memory');
+		console.log('   PUT    /pods/{actorName}/memory/{key} - Store in actor memory');
 		console.log('');
 		console.log('🔗 Use with paseo-sdk:');
 		console.log('   Add to your .env file:');

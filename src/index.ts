@@ -17,19 +17,19 @@ export default {
                        if (request.method !== 'POST') {
                                return new Response('Method Not Allowed', { status: 405 });
                        }
-                       const podName = crypto.randomUUID();
-                       const podId = env.PASEO_POD.idFromName(podName);
-                       const stub = env.PASEO_POD.get(podId);
+                       const actorName = crypto.randomUUID();
+                       const actorId = env.PASEO_POD.idFromName(actorName);
+                       const stub = env.PASEO_POD.get(actorId);
                        await stub.status();
-                       return Response.json({ podName });
+                       return Response.json({ actorName });
                }
 
                if (pathParts[0] === 'pods' && pathParts[1]) {
-			const podName = pathParts[1];
+			const actorName = pathParts[1];
 			const subpath = pathParts.slice(2).join('/');
 
-			const podId = env.PASEO_POD.idFromName(podName);
-			const stub = env.PASEO_POD.get(podId);
+			const actorId = env.PASEO_POD.idFromName(actorName);
+			const stub = env.PASEO_POD.get(actorId);
 
 			switch (subpath) {
 				case '':
