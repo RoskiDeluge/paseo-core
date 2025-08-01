@@ -1,22 +1,22 @@
 # Paseo Core
 
-Paseo Core is a backend infrastructure for deploying intelligent, stateful pods as Cloudflare Workers with Durable Objects. This repository provides the server-side implementation that powers the Paseo ecosystem, creating REST API endpoints for pod management, persistent storage, and state coordination.
+Paseo Core is a backend infrastructure for deploying stateful actors powered by Cloudflare Workers and Durable Objects. This repository provides the server-side implementation that powers the Paseo ecosystem, creating REST API endpoints for actor management, persistent storage, and state coordination.
 
-**This is the backend component** - for client-side integration, use the [paseo-sdk](https://github.com/RoskiDeluge/paseo-sdk) repository which provides a simple interface to interact with these Workers endpoints.
+**This is the backend component** - for client-side integration, use the [paseo-sdk](https://github.com/RoskiDeluge/paseo-sdk) repository which provides a simple interface to interact with these actor endpoints.
 
 ## What is Paseo Core?
 
-Paseo Core serves as the foundational backend infrastructure for the Paseo ecosystem. It deploys Cloudflare Workers and Durable Objects that provide persistent, stateful execution environments called **pods**. Each pod acts as an isolated micro-environment with its own compute, networking, and storage capabilities.
+Paseo Core serves as the foundational backend infrastructure for the Paseo ecosystem. It deploys Cloudflare Workers and Durable Objects that provide persistent, stateful execution environments called **pods**. Each pod acts as a micro-environment with its own set of isolated actors, each of which contains logic, state, and storage capabilities.
 
 This repository handles the server-side logic, API endpoints, and data persistence, while the [paseo-sdk](https://github.com/RoskiDeluge/paseo-sdk) provides the client-side tools for developers to easily interact with these backend services.
 
 
 ## ✨ Key Features
 
-- **Cloudflare Workers Backend**: Global edge deployment for low-latency pod access
-- **Durable Objects Integration**: Persistent state management and coordination
-- **REST API Endpoints**: Clean HTTP interface for pod creation, interaction, and management
-- **Stateful Pod Architecture**: Each pod maintains isolated memory and conversation history
+- **Cloudflare Workers Backend**: Global edge deployment for low-latency actor access
+- **Durable Objects Integration**: Persistent state management and coordination for each actor
+- **REST API Endpoints**: Clean HTTP interface for actor creation, interaction, and management
+- **Stateful Pod Architecture**: Each actor maintains isolated memory and conversation history
 - **SDK-Ready**: Designed to work seamlessly with [paseo-sdk](https://github.com/RoskiDeluge/paseo-sdk) for client applications
 
 ## 📦 Setup & Deployment
@@ -75,17 +75,17 @@ Pods can live temporarily or persist indefinitely, accumulate experience, reflec
 Once deployed, Paseo Core provides the following REST API endpoints:
 
 ### Pod Management
-- `POST /pods` - Create a new pod with a randomly assigned ID
-- `GET /pods/{podName}` - Retrieve pod state and conversation history
-- `POST /pods/{podName}/messages` - Send messages to a pod
-- `GET /pods/{podName}/memory` - Access pod's key-value storage
-- `PUT /pods/{podName}/memory/{key}` - Store data in pod memory
+- `POST /pods` - Create a new actor with a randomly assigned ID
+- `GET /pods/{actorName}` - Retrieve actor state and conversation history
+- `POST /pods/{actorName}/messages` - Send messages to an actor
+- `GET /pods/{actorName}/memory` - Access actor's key-value storage
+- `PUT /pods/{actorName}/memory/{key}` - Store data in actor memory
 
 ### Current Backend Capabilities
 - Persistent conversation and prompt/response history storage
-- Key-value data storage per pod
+- Key-value data storage per actor
 - Full memory state retrieval and management
-- Stateful pod lifecycle management
+- Stateful actor lifecycle management
 
 ### Usage with SDK
 
@@ -113,20 +113,19 @@ console.log("🧠", history);
 
 ### Backend Infrastructure
 - Enhanced Worker deployment automation
-- Advanced pod lifecycle management
+- Advanced actor lifecycle management
 - Event hooks and background task processing
-- Pod-to-pod communication protocols
+- Actor-to-actor communication protocols
 - Enhanced security and authentication layers
 
 ### SDK & Client Tools
 - CLI for local development and testing
-- Advanced pod relationship management
-- Federation and distributed pod networks
+- Advanced actor relationship management
+- Federation and distributed actor networks
 - Integration templates for common use cases
 
 ### Integration Features
-- Optional LLM backend connectors
 - Webhook and event streaming support
 - Enhanced monitoring and analytics
-- Multi-tenant pod management
+- Multi-tenant actor management
 
