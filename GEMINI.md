@@ -1,6 +1,6 @@
-# Gemini Guidelines for `paseo-mvp`
+# Gemini Guidelines for `paseo-core`
 
-This document provides a summary of the `paseo-mvp` project to help Gemini assist with development.
+This document provides a summary of the `paseo-core` project to help Gemini assist with development.
 
 ## Project Overview
 
@@ -11,6 +11,7 @@ Paseo is an experimental runtime for deploying intelligent, stateful pods that s
 - **Runtime**: Cloudflare Workers
 - **State Management**: Cloudflare Durable Objects
 - **Language**: TypeScript
+- **Validation**: Zod
 - **Testing**: Vitest
 - **Deployment**: Wrangler
 
@@ -31,7 +32,7 @@ Paseo is an experimental runtime for deploying intelligent, stateful pods that s
 
 - `src/`: Main source code.
   - `index.ts`: Entry point for the Cloudflare Worker.
-  - `paseo-pod.ts`: Implementation of the Durable Object.
+  - `actor-do.ts`: Implementation of the Durable Object.
 - `test/`: Vitest tests.
 - `wrangler.jsonc`: Configuration for the Cloudflare Worker and Durable Objects.
 - `package.json`: Project dependencies and scripts.
