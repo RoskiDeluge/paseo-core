@@ -123,6 +123,35 @@ async function deployAndShowEndpoint() {
 				console.log(`   POST   /pods/${podName}/actors/${actorData.actorId}/items          - Add item to store`);
 				console.log(`   GET    /pods/${podName}/actors/${actorData.actorId}/items/{itemId} - Get specific item`);
 				console.log(`   GET    /pods/${podName}/actors/${actorData.actorId}/openapi.json  - OpenAPI specification`);
+				console.log('');
+				console.log('🔗 Ready to use! Here are some examples:');
+				console.log('');
+				console.log('📝 Store an item:');
+				console.log(`   curl -X POST ${fullEndpoint}/pods/${podName}/actors/${actorData.actorId}/items \\`);
+				console.log('     -H "Content-Type: application/json" \\');
+				console.log('     -d \'{"id":"demo-item","data":{"message":"Hello Paseo!"}}\'');
+				console.log('');
+				console.log('📄 List all items:');
+				console.log(`   curl ${fullEndpoint}/pods/${podName}/actors/${actorData.actorId}/items`);
+				console.log('');
+				console.log('🔍 Get a specific item:');
+				console.log(`   curl ${fullEndpoint}/pods/${podName}/actors/${actorData.actorId}/items/demo-item`);
+				console.log('');
+				console.log('📋 View API specification:');
+				console.log(`   curl ${fullEndpoint}/pods/${podName}/actors/${actorData.actorId}/openapi.json`);
+				console.log('');
+				console.log('💾 Environment variables for scripts:');
+				console.log(`   export PASEO_ENDPOINT="${fullEndpoint}"`);
+				console.log(`   export PASEO_POD_NAME="${podName}"`);
+				console.log(`   export PASEO_ACTOR_ID="${actorData.actorId}"`);
+				console.log(`   export STORE_BASE_URL="$PASEO_ENDPOINT/pods/$PASEO_POD_NAME/actors/$PASEO_ACTOR_ID"`);
+				console.log('');
+				console.log('📚 Then use in your scripts:');
+				console.log(
+					'   # Store item: curl -X POST $STORE_BASE_URL/items -H "Content-Type: application/json" -d \'{"id":"test","data":{}}\''
+				);
+				console.log('   # List items: curl $STORE_BASE_URL/items');
+				console.log('   # Get item:   curl $STORE_BASE_URL/items/test');
 			} catch (error) {
 				console.log('⚠️  Could not create default store:', error.message);
 				console.log('');
@@ -148,18 +177,24 @@ async function deployAndShowEndpoint() {
 		}
 
 		console.log('');
-		console.log('🔗 Use with paseo-sdk:');
-		console.log('   Add to your .env file:');
-
-		if (fullEndpoint) {
-			console.log(`   PASEO_ENDPOINT=${fullEndpoint}`);
-		} else {
-			console.log(`   PASEO_ENDPOINT=https://${workerName}.<your-account>.workers.dev`);
-		}
-
+		console.log('🔗 Usage Examples:');
+		console.log('   Direct HTTP API access - no SDK needed!');
 		console.log('');
-		console.log('   Then create your client:');
-		console.log('   const client = new PaseoClient();');
+		console.log('   1. Create a pod:');
+		console.log(`      curl -X POST ${fullEndpoint || `https://${workerName}.<your-account>.workers.dev`}/pods`);
+		console.log('');
+		console.log('   2. Create a store actor:');
+		console.log(`      curl -X POST ${fullEndpoint || `https://${workerName}.<your-account>.workers.dev`}/pods/{podName}/actors \\`);
+		console.log('        -H "Content-Type: application/json" \\');
+		console.log(
+			'        -d \'{"config":{"actorType":"store","version":"v1","schema":{"type":"object","properties":{"id":{"type":"string"}},"required":["id"]},"indexes":["id"]}}\''
+		);
+		console.log('');
+		console.log('   3. Use the OpenAPI spec to explore all endpoints');
+		console.log('');
+		console.log(`   🌐 Base URL: ${fullEndpoint || `https://${workerName}.<your-account>.workers.dev`}`);
+
+		console.log('   # Pod and Actor IDs will be shown above when default store is created');
 
 		console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 		console.log('');

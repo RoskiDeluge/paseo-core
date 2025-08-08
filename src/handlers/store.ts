@@ -137,7 +137,7 @@ export function storeHandlerFactory(cfg: ActorConfig): Handler {
         const cols = ["id", "ts", "schema_version", "body", ...Object.keys(values)];
         const marks = cols.map(() => "?").join(", ");
         const args = [id, ts, "v1", JSON.stringify(validatedDoc), ...Object.values(values)];
-        await db.exec(`INSERT INTO items(${cols.join(",")}) VALUES (${marks})`, args);
+        await db.exec(`INSERT INTO items(${cols.join(",")}) VALUES (${marks})`, ...args);
 
         return Response.json({ id, ts });
       }
