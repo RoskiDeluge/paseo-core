@@ -1,92 +1,64 @@
-// import type { DurableObjectNamespace } from "@cloudflare/workers-types";
-
-// export interface Env {
-//   PASEO_POD: DurableObjectNamespace;
-// }
-
-export interface Env {
-	PASEO_POD: any; // temporarily use 'any' until type declarations are available
-}
+// src/index.ts
+import type { Env, ActorConfig } from "./types";
+export { ActorDO } from "./actor-do";
 
 export default {
-	async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
-		const url = new URL(request.url);
-		const pathParts = url.pathname.split('/').filter(Boolean);
+  async fetch(req: Request, env: Env) {
+    const url = new URL(req.url);
+    const parts = url.pathname.split("/").filter(Boolean);
 
-               if (pathParts[0] === 'pods' && !pathParts[1]) {
-                       if (request.method !== 'POST') {
-                               return new Response('Method Not Allowed', { status: 405 });
-                       }
-                       const actorName = crypto.randomUUID();
-                       const actorId = env.PASEO_POD.idFromName(actorName);
-                       const stub = env.PASEO_POD.get(actorId);
-                       await stub.status();
-                       return Response.json({ actorName });
-               }
+    // POST /pods -> create a pod
+    if (req.method === "POST" && parts[0] === "pods" && parts.length === 1) {
+      const podName = crypto.randomUUID();
+      // Optional: warm-up or record pod metadata somewhere if you like
+      return Response.json({ podName });
+    }
 
-               if (pathParts[0] === 'pods' && pathParts[1]) {
-			const actorName = pathParts[1];
-			const subpath = pathParts.slice(2).join('/');
+    // GET /pods/{podName} -> pod status
+    if (req.method === "GET" && parts[0] === "pods" && parts[1] && parts.length === 2) {
+      const podName = parts[1];
+      // Minimal status for now
+      return Response.json({ podName, status: "ok" });
+    }
 
-			const actorId = env.PASEO_POD.idFromName(actorName);
-			const stub = env.PASEO_POD.get(actorId);
+    // POST /pods/{podName}/actors -> create actor inside pod
+    if (req.method === "POST" && parts[0] === "pods" && parts[1] && parts[2] === "actors" && parts.length === 3) {
+      const podName = parts[1];
+	  const body = await req.json().catch(() => ({})) as { config?: ActorConfig };
+      const actorId = crypto.randomUUID();
+      const actorKey = `${podName}:${actorId}`;
 
-			switch (subpath) {
-				case '':
-					return new Response(await stub.status());
+      const id = env.ACTOR_DO.idFromName(actorKey);
+      const stub = env.ACTOR_DO.get(id);
 
-				case 'get': {
-					const key = url.searchParams.get('key');
-					if (!key) return new Response('Missing key', { status: 400 });
-					const value = await stub.get(key);
-					return Response.json({ key, value });
-				}
+      // seed config into the actor DO
+      await stub.fetch(new Request(`${url.origin}/pods/${podName}/actors/${actorId}/__seed`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body?.config ?? {})
+      }));
 
-				case 'set': {
-					const key = url.searchParams.get('key');
-					const value = url.searchParams.get('value');
-					if (!key || value === null) {
-						return new Response('Missing key or value', { status: 400 });
-					}
-					await stub.set(key, value);
-					return Response.json({ status: 'ok', key, value });
-				}
+      return Response.json({
+        podName,
+        actorId,
+        openapi: `${url.origin}/pods/${podName}/actors/${actorId}/openapi.json`
+      });
+    }
 
-				case 'all': {
-					const all = await stub.all();
-					return Response.json(all);
-				}
+    // Actor routes under /pods/{podName}/actors/{actorId}/...
+    if (parts[0] === "pods" && parts[1] && parts[2] === "actors" && parts[3]) {
+      const podName = parts[1];
+      const actorId = parts[3];
+      const actorKey = `${podName}:${actorId}`;
+      const id = env.ACTOR_DO.idFromName(actorKey);
+      const stub = env.ACTOR_DO.get(id);
 
-				case 'llm': {
-					if (request.method !== 'POST') {
-						return new Response('Method Not Allowed', { status: 405 });
-					}
-					let body: { prompt?: string };
-					try {
-						body = await request.json();
-					} catch {
-						return new Response('Invalid JSON', { status: 400 });
-					}
-					if (!body.prompt) {
-						return new Response("Missing 'prompt' in body", { status: 400 });
-					}
-					const resp = await stub.llm(body.prompt);
-					return Response.json({ response: resp });
-				}
+      // Proxy the exact subpath to the DO
+      const remainder = "/" + parts.slice(4).join("/");
+      const target = new URL(`/pods/${podName}/actors/${actorId}${remainder}`, url.origin);
+      return stub.fetch(new Request(target, req));
+    }
 
-				case 'conversation': {
-					const conversation = await stub.conversation();
-					return Response.json({ conversation });
-				}
-
-				default:
-					return new Response('Not Found', { status: 404 });
-			}
-		}
-
-		return new Response('Not Found', { status: 404 });
-	},
+    return new Response("Not Found", { status: 404 });
+  }
 };
-
-// ✅ Re-export your DO class so wrangler can detect it
-export { PASEO_POD } from './paseo-pod';

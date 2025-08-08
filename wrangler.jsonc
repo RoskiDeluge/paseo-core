@@ -6,17 +6,18 @@
 
   "durable_objects": {
     "bindings": [
-      {
-        "name": "PASEO_POD",
-        "class_name": "PASEO_POD"
-      }
+      { "name": "ACTOR_DO", "class_name": "ActorDO" }
     ]
   },
 
   "migrations": [
-    {
-      "tag": "v1",
-      "new_sqlite_classes": ["PASEO_POD"]
-    }
+    // ── legacy objects stay listed for history, but are unused ──
+    { "tag": "v1", "new_sqlite_classes": ["PASEO_POD"] },
+
+    // ── delete the old class and start fresh ──
+    { "tag": "v2", "deleted_classes": ["PASEO_POD"] },
+
+    // ── brand-new clean namespace for the refactor ──
+    { "tag": "v3", "new_sqlite_classes": ["ActorDO"] }
   ]
 }

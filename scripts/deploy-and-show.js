@@ -4,7 +4,18 @@ const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-function deployAndShowEndpoint() {
+// Use fetch polyfill for Node.js versions that don't have it built-in
+let fetch;
+try {
+	fetch = globalThis.fetch;
+	if (!fetch) {
+		fetch = require('node-fetch');
+	}
+} catch (e) {
+	console.log('⚠️  Note: fetch not available, skipping default store creation');
+}
+
+async function deployAndShowEndpoint() {
 	try {
 		console.log('🚀 Deploying to Cloudflare ...\n');
 
@@ -43,12 +54,99 @@ function deployAndShowEndpoint() {
 		}
 
 		console.log('');
-		console.log('📚 Available API endpoints:');
-		console.log('   POST   /pods                          - Create a new actor');
-		console.log('   GET    /pods/{actorName}              - Get actor state');
-		console.log('   POST   /pods/{actorName}/messages     - Send message to actor');
-		console.log('   GET    /pods/{actorName}/memory       - Get actor memory');
-		console.log('   PUT    /pods/{actorName}/memory/{key} - Store in actor memory');
+		console.log('🎯 Creating default store actor...');
+
+		// Create a default pod and store actor
+		if (fullEndpoint && fetch) {
+			try {
+				console.log(`Attempting to create pod at: ${fullEndpoint}/pods`);
+
+				// Create a pod
+				const podResponse = await fetch(`${fullEndpoint}/pods`, {
+					method: 'POST',
+					headers: {
+						'User-Agent': 'paseo-deploy-script/1.0',
+						Accept: 'application/json',
+					},
+				});
+
+				if (!podResponse.ok) {
+					throw new Error(`Pod creation failed: ${podResponse.status} ${podResponse.statusText}`);
+				}
+
+				const podData = await podResponse.json();
+				const podName = podData.podName;
+				console.log(`Pod created: ${podName}`);
+
+				// Create a default store actor in the pod
+				const storeConfig = {
+					config: {
+						actorType: 'store',
+						version: 'v1',
+						schema: {
+							type: 'object',
+							properties: {
+								id: { type: 'string' },
+								data: { type: 'object' },
+							},
+							required: ['id'],
+						},
+						indexes: ['id'],
+					},
+				};
+
+				console.log(`Creating actor in pod: ${podName}`);
+				const actorResponse = await fetch(`${fullEndpoint}/pods/${podName}/actors`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'User-Agent': 'paseo-deploy-script/1.0',
+						Accept: 'application/json',
+					},
+					body: JSON.stringify(storeConfig),
+				});
+
+				if (!actorResponse.ok) {
+					throw new Error(`Actor creation failed: ${actorResponse.status} ${actorResponse.statusText}`);
+				}
+
+				const actorData = await actorResponse.json();
+
+				console.log(`✅ Default store created: ${actorData.actorId}`);
+				console.log(`📋 OpenAPI spec: ${actorData.openapi}`);
+				console.log('');
+				console.log('📚 Available API endpoints:');
+				console.log(`   POST   /pods                                    - Create a new pod`);
+				console.log(`   GET    /pods/{podName}                         - Get pod status`);
+				console.log(`   POST   /pods/{podName}/actors                  - Create actor in pod`);
+				console.log(`   GET    /pods/${podName}/actors/${actorData.actorId}/items          - List items in store`);
+				console.log(`   POST   /pods/${podName}/actors/${actorData.actorId}/items          - Add item to store`);
+				console.log(`   GET    /pods/${podName}/actors/${actorData.actorId}/items/{itemId} - Get specific item`);
+				console.log(`   GET    /pods/${podName}/actors/${actorData.actorId}/openapi.json  - OpenAPI specification`);
+			} catch (error) {
+				console.log('⚠️  Could not create default store:', error.message);
+				console.log('');
+				console.log('📚 Available API endpoints:');
+				console.log('   POST   /pods                                    - Create a new pod');
+				console.log('   GET    /pods/{podName}                         - Get pod status');
+				console.log('   POST   /pods/{podName}/actors                  - Create actor in pod');
+				console.log('   GET    /pods/{podName}/actors/{actorId}/items          - List items in store');
+				console.log('   POST   /pods/{podName}/actors/{actorId}/items          - Add item to store');
+				console.log('   GET    /pods/{podName}/actors/{actorId}/items/{itemId} - Get specific item');
+				console.log('   GET    /pods/{podName}/actors/{actorId}/openapi.json  - OpenAPI specification');
+			}
+		} else {
+			console.log('');
+			console.log('📚 Available API endpoints:');
+			console.log('   POST   /pods                                    - Create a new pod');
+			console.log('   GET    /pods/{podName}                         - Get pod status');
+			console.log('   POST   /pods/{podName}/actors                  - Create actor in pod');
+			console.log('   GET    /pods/{podName}/actors/{actorId}/items          - List items in store');
+			console.log('   POST   /pods/{podName}/actors/{actorId}/items          - Add item to store');
+			console.log('   GET    /pods/{podName}/actors/{actorId}/items/{itemId} - Get specific item');
+			console.log('   GET    /pods/{podName}/actors/{actorId}/openapi.json  - OpenAPI specification');
+		}
+
 		console.log('');
 		console.log('🔗 Use with paseo-sdk:');
 		console.log('   Add to your .env file:');
@@ -73,4 +171,4 @@ function deployAndShowEndpoint() {
 	}
 }
 
-deployAndShowEndpoint();
+deployAndShowEndpoint().catch(console.error);
