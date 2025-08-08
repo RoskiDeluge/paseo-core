@@ -6,9 +6,11 @@ Paseo Core is a backend infrastructure for deploying stateful actors powered by 
 
 ## What is Paseo Core?
 
-Paseo Core serves as the foundational backend infrastructure for the Paseo ecosystem. It deploys Cloudflare Workers and Durable Objects that provide persistent, stateful execution environments called **pods**. Each pod acts as a micro-environment with its own set of isolated actors, each of which contains logic, state, and storage capabilities.
+Paseo Core serves as the foundational backend infrastructure for the Paseo ecosystem. It deploys Cloudflare Workers and Durable Objects that provide persistent, stateful execution environments organized into **pods** and **actors**.
 
-This repository handles the server-side logic, API endpoints, and data persistence, while the [paseo-sdk](https://github.com/RoskiDeluge/paseo-sdk) provides the client-side tools for developers to easily interact with these backend services.
+**Pods** act as organizational containers that group related actors together. Each **actor** within a pod is an isolated Durable Object with its own state, storage, and configurable behavior patterns. The system comes with a built-in "store" actor type that provides schema-validated data storage, serving as both a practical tool and a reference pattern for developers building more complex actor behaviors.
+
+This repository handles the server-side logic, nested API endpoints, and data persistence, while the [paseo-sdk](https://github.com/RoskiDeluge/paseo-sdk) provides the client-side tools for developers to easily interact with these backend services.
 
 
 ## ✨ Key Features
@@ -65,27 +67,89 @@ Pods can live temporarily or persist indefinitely, accumulate experience, reflec
 └─────────────────┘                  │   Durable        │
                                      │   Objects)       │
                                      └──────────────────┘
+                                              │
+                                              ▼
+                                     ┌──────────────────┐
+                                     │      Pods        │
+                                     │  ┌─────────────┐ │
+                                     │  │   Actor A   │ │
+                                     │  │   (store)   │ │
+                                     │  └─────────────┘ │
+                                     │  ┌─────────────┐ │
+                                     │  │   Actor B   │ │
+                                     │  │   (store)   │ │
+                                     │  └─────────────┘ │
+                                     └──────────────────┘
 ```
+
+**Architecture Principles:**
+- **Pods**: Organizational containers that group related actors
+- **Actors**: Individual Durable Objects with isolated state and configurable behavior  
+- **Store Pattern**: Default actor implementation providing schema-validated data storage
+- **Composable Design**: Store actors serve as building blocks for more complex patterns
 
 - **Paseo Core** (this repo): Backend infrastructure providing REST APIs
 - **[Paseo SDK](https://github.com/RoskiDeluge/paseo-sdk)**: Client library for easy integration
 
-## 🔧 API Endpoints
+## 🔧 API Architecture
 
-Once deployed, Paseo Core provides the following REST API endpoints:
+Paseo Core implements a nested, hierarchical API structure that allows for organized, scalable actor management:
 
 ### Pod Management
-- `POST /pods` - Create a new actor with a randomly assigned ID
-- `GET /pods/{actorName}` - Retrieve actor state and conversation history
-- `POST /pods/{actorName}/messages` - Send messages to an actor
-- `GET /pods/{actorName}/memory` - Access actor's key-value storage
-- `PUT /pods/{actorName}/memory/{key}` - Store data in actor memory
+- `POST /pods` - Create a new pod with a randomly assigned ID
+- `GET /pods/{podName}` - Get pod status and basic information
+
+### Actor Management (within pods)
+- `POST /pods/{podName}/actors` - Create a new actor within a pod
+- `GET /pods/{podName}/actors/{actorId}/openapi.json` - Get the OpenAPI specification for the actor
+
+### Actor Data Operations
+All actors are created with a default "store" handler that provides a simple, yet powerful data storage pattern:
+
+- `GET /pods/{podName}/actors/{actorId}/items` - List stored items with optional filtering and pagination
+- `POST /pods/{podName}/actors/{actorId}/items` - Store a validated document according to the actor's schema
+- `GET /pods/{podName}/actors/{actorId}/items/{itemId}` - Retrieve a specific item by ID
+
+### Store Actor Pattern
+
+Each actor comes with a built-in "store" handler that serves as both a reference implementation and a practical starting point for developers and agents. The store provides:
+
+**Schema Validation**: Define a JSON Schema when creating an actor to enforce data structure
+```json
+{
+  "config": {
+    "actorType": "store",
+    "version": "v1", 
+    "schema": {
+      "type": "object",
+      "properties": {
+        "message": { "type": "string" },
+        "timestamp": { "type": "number" },
+        "metadata": { "type": "object" }
+      },
+      "required": ["message"]
+    },
+    "indexes": ["metadata.type", "timestamp"]
+  }
+}
+```
+
+**Indexed Querying**: Configure indexes on nested JSON properties for efficient filtering
+```
+GET /pods/{podName}/actors/{actorId}/items?k_metadata_type=chat&limit=10
+```
+
+**Pagination**: Built-in cursor-based pagination for large datasets
+```
+GET /pods/{podName}/actors/{actorId}/items?after=some-item-id&limit=50
+```
 
 ### Current Backend Capabilities
-- Persistent conversation and prompt/response history storage
-- Key-value data storage per actor
-- Full memory state retrieval and management
-- Stateful actor lifecycle management
+- **Hierarchical Organization**: Pods contain multiple actors, each with isolated state
+- **Schema-driven Storage**: JSON Schema validation with configurable indexes
+- **Automatic OpenAPI Generation**: Each actor exposes its own API specification
+- **Flexible Data Patterns**: The store actor serves as a foundation for more complex behaviors
+- **Edge-optimized Performance**: Cloudflare Workers + Durable Objects for global low-latency access
 
 ### Usage with SDK
 
@@ -96,17 +160,38 @@ Add the following to your .env file at the root of your project and replace the 
 PASEO_ENDPOINT=https://paseo-core.<your-account>.workers.dev
 ```
 
-Then create the client within your project like so:
+Then interact with pods and actors in your project:
 ```javascript
 import { createPaseoClient } from "paseo-sdk";
 
 const paseo = await createPaseoClient();
 
-const reply = await paseo.sendPrompt("What's the current state of this entity?");
-console.log("🤖", reply);
+// Create a pod and actor
+const pod = await paseo.createPod();
+const actor = await paseo.createActor(pod.podName, {
+  schema: {
+    type: "object",
+    properties: {
+      message: { type: "string" },
+      timestamp: { type: "number" }
+    },
+    required: ["message"]
+  },
+  indexes: ["timestamp"]
+});
 
-const history = await paseo.getConversation();
-console.log("🧠", history);
+// Store and retrieve data
+await actor.storeItem({ 
+  message: "Hello from the actor!", 
+  timestamp: Date.now() 
+});
+
+const items = await actor.listItems({ limit: 10 });
+console.log("📦 Stored items:", items);
+
+// Explore the actor's API
+const apiSpec = await actor.getOpenAPI();
+console.log("🔧 Actor capabilities:", apiSpec);
 ```
 
 ## 🗺 Roadmap
