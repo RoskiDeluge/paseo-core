@@ -1,10 +1,10 @@
 // src/registry.ts
-import type { ActorConfig } from "./types";
+import type { ActorConfig, BaseActorConfig } from "./types";
 
-export interface Handler {
-  ensureSchema(db: SqlStorage, cfg: ActorConfig): Promise<void>;
-  handle(req: Request, db: SqlStorage, cfg: ActorConfig): Promise<Response>;
-  openapi(cfg: ActorConfig, basePath: string): any; // returns OpenAPI JSON
+export interface Handler<TConfig extends BaseActorConfig = ActorConfig> {
+  ensureSchema(db: SqlStorage, cfg: TConfig): Promise<void>;
+  handle(req: Request, db: SqlStorage, cfg: TConfig): Promise<Response>;
+  openapi(cfg: TConfig, basePath: string): any; // returns OpenAPI JSON
 }
 
 import { storeHandlerFactory } from "./handlers/store";

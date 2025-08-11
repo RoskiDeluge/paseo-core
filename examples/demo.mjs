@@ -45,7 +45,7 @@ async function ensureActor() {
 		return ACTOR;
 	}
 	console.log('🎭 Creating a store actor...');
-	const actorConfig = {
+	const storeActorConfig = {
 		config: {
 			actorType: 'store',
 			version: 'v1',
@@ -70,7 +70,7 @@ async function ensureActor() {
 			indexes: ['id', 'data.type'],
 		},
 	};
-	const { actorId, openapi } = await httpJson(`${ENDPOINT}/pods/${POD}/actors`, { method: 'POST', body: JSON.stringify(actorConfig) });
+	const { actorId, openapi } = await httpJson(`${ENDPOINT}/pods/${POD}/actors`, { method: 'POST', body: JSON.stringify(storeActorConfig) });
 	ACTOR = actorId;
 	console.log(`✅ Actor: ${ACTOR}`);
 	console.log(`📋 OpenAPI: ${openapi}`);

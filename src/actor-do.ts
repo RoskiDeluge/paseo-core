@@ -1,5 +1,5 @@
 // src/actor-do.ts
-import type { ActorConfig } from "./types";
+import type { ActorConfig, StoreActorConfig } from "./types";
 import { registry } from "./registry";
 
 export class ActorDO {
@@ -13,7 +13,11 @@ export class ActorDO {
     if (!this.db) this.db = this.state.storage.sql;
     if (!this.cfg) {
       // default until seeded
-      this.cfg = { actorType: "store", version: "v1", schema: { type: "object" } };
+      this.cfg = { 
+        actorType: "store", 
+        version: "v1", 
+        schema: { type: "object" } 
+      } as StoreActorConfig;
       const persisted = await this.state.storage.get<ActorConfig>("cfg");
       if (persisted) this.cfg = persisted;
       await this.state.storage.put("cfg", this.cfg);

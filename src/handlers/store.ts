@@ -1,6 +1,6 @@
 // src/handlers/store.ts
 import { z } from "zod";
-import type { ActorConfig } from "../types";
+import type { StoreActorConfig } from "../types";
 import type { Handler } from "../registry";
 
 /** safe column label from "a.b.c" -> "k_a_b_c" */
@@ -38,7 +38,7 @@ function jsonSchemaToZod(schema: any): z.ZodType {
   return z.any();
 }
 
-export function storeHandlerFactory(cfg: ActorConfig): Handler {
+export function storeHandlerFactory(cfg: StoreActorConfig): Handler<StoreActorConfig> {
   const idxCols = (cfg.indexes ?? []).map(colName);
   const zodSchema = jsonSchemaToZod(cfg.schema);
 
