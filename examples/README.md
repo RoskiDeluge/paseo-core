@@ -10,21 +10,6 @@ This directory contains working examples and documentation for the Paseo Core ac
 
 ### 📚 Documentation
 - **`RESPONSES_STORE.md`** - Comprehensive documentation for the ResponsesStore handler
-- **`README.md`** - This overview filetory
-
-This directory contains working examples and documentation for the Paseo Core actor system, focusing on the store handlers.
-
-## 📁 Files Overview
-
-### � Working Demo Scripts
-- **`demo.mjs`** - Interactive demo script for the generic store handler
-- **`responses-demo.mjs`** - Interactive demo script for the responses store handler
-
-### ⚙️ Configuration Examples
-- **`openai-response-store-config.ts`** - Complete configuration example for the ResponsesStore handler
-
-### 📚 Documentation
-- **`RESPONSES_STORE.md`** - Comprehensive documentation for the ResponsesStore handler
 - **`README.md`** - This overview file
 
 ## 🚀 Quick Start
@@ -45,26 +30,6 @@ export PASEO_ENDPOINT="https://your-worker.workers.dev"
 
 # Run the responses store demo
 node examples/responses-demo.mjs
-```
-
-### 3. Use Configuration from Demo
-The demo scripts contain complete configuration examples that you can reference:
-
-```typescript
-// From responses-demo.mjs - ResponsesStore configuration
-const responsesActorConfig = {
-  config: {
-    actorType: 'responsesStore',
-    version: 'v1',
-    schema: { /* OpenAI Response API schema */ },
-    indexes: ['id', 'status', 'model', 'output.type', 'output.role'],
-    params: {
-      retention_days: 30,
-      max_output_content_length: 1000,
-      enable_content_search: true
-    }
-  }
-};
 ```
 
 ## 🎯 Handler Types
