@@ -40,13 +40,27 @@ export type StoreActorConfig = BaseActorConfig & {
   };
 };
 
+// Responses Store-specific configuration (optimized for OpenAI Response API)
+export type ResponsesStoreActorConfig = BaseActorConfig & {
+  actorType: "responsesStore";
+  version: "v1";
+  indexes?: string[];                // e.g. ["id", "status", "output.type", "output.role"]
+  params?: {
+    retention_days?: number;
+    max_output_content_length?: number;  // Truncate output content for indexing
+    enable_content_search?: boolean;     // Enable full-text search on output content
+  };
+};
+
 // Union type for all possible actor configurations
 // Add new actor config types here as they are created
-export type ActorConfig = StoreActorConfig;
+export type ActorConfig = StoreActorConfig | ResponsesStoreActorConfig;
 
 // Type helper to extract config type based on actor type and version
 export type ConfigForActor<T extends string, V extends string> = 
-  T extends "store" ? (V extends "v1" ? StoreActorConfig : never) : never;
+  T extends "store" ? (V extends "v1" ? StoreActorConfig : never) :
+  T extends "responsesStore" ? (V extends "v1" ? ResponsesStoreActorConfig : never) :
+  never;
 
 export type Env = {
   ACTOR_DO: DurableObjectNamespace;

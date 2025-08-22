@@ -8,6 +8,19 @@ export interface Handler<TConfig extends BaseActorConfig = ActorConfig> {
 }
 
 import { storeHandlerFactory } from "./handlers/store";
+import { responsesStoreHandlerFactory } from "./handlers/responsesStore";
+
 export const registry: Record<string, (cfg: ActorConfig) => Handler> = {
-  "store.v1": storeHandlerFactory,
+  "store.v1": (cfg: ActorConfig) => {
+    if (cfg.actorType === "store") {
+      return storeHandlerFactory(cfg);
+    }
+    throw new Error(`Invalid config for store.v1: expected actorType 'store', got '${cfg.actorType}'`);
+  },
+  "responsesStore.v1": (cfg: ActorConfig) => {
+    if (cfg.actorType === "responsesStore") {
+      return responsesStoreHandlerFactory(cfg);
+    }
+    throw new Error(`Invalid config for responsesStore.v1: expected actorType 'responsesStore', got '${cfg.actorType}'`);
+  },
 };
