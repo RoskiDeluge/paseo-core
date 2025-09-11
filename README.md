@@ -88,9 +88,7 @@ This script will:
 
 ## 🧠 Philosophy
 
-Paseo is grounded in the belief that digital systems should not require premature commitment to AI-native workflows. Instead, the priority is to represent entities—human or non-human—in ways that preserve continuity, autonomy, and potential for growth. Inspired by Marvin Minsky's "Society of Mind," Paseo pods can form networks of co-operating intelligences, but begin simply as containers for structured memory and interaction.
-
-Pods can live temporarily or persist indefinitely, accumulate experience, reflect decisions, or wait silently until needed. They can be used by agents—or serve as agents themselves. But most importantly, they can mirror the structure and complexity of the world, without being constrained by it.
+Pods and actors are designed as context engineering utilities. They can live temporarily or persist indefinitely, accumulate state, and provide a structured substrate for applications. Their primary purpose is to serve as the backbone for context-rich applications, mirroring the structure and complexity of the world without being constrained by it.
 
 ## 🏗 Architecture Overview
 
@@ -264,10 +262,4 @@ print("Items:", items.json())
 - CLI tools for local development and testing
 - Enhanced monitoring and analytics dashboard
 - Integration templates and examples for common use cases
-
-### Advanced Features
-- Webhook and event streaming support
-- Multi-tenant actor management
-- Actor federation and distributed networks
-- Real-time actor-to-actor communication
 
