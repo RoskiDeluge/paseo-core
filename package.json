@@ -1,6 +1,6 @@
 {
 	"name": "paseo-core",
-	"version": "0.0.0",
+	"version": "0.1.5",
 	"private": true,
 	"scripts": {
 		"deploy": "node scripts/deploy-and-show.js",
